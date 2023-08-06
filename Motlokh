@@ -1,8 +1,7 @@
-import multiprocessing
 import os
 import shutil
 import time
-
+import multiprocessing
 
 def factorize(number):
     factors = []
@@ -45,8 +44,7 @@ def sort_files_by_extension_async(folder_path, destination_folder):
         ext = ext[1:]  # Remove the dot from the extension
         extensions.setdefault(ext, []).append(file_path)
 
-    def move_files(ext_files):
-        ext, files = ext_files
+    def move_files(ext, files):
         ext_folder = os.path.join(destination_folder, ext)
         if not os.path.exists(ext_folder):
             os.makedirs(ext_folder)
@@ -60,7 +58,7 @@ def sort_files_by_extension_async(folder_path, destination_folder):
         file_paths = [os.path.join(root, file) for file in files]
         pool.map(process_file, file_paths)
 
-    pool.map(move_files, extensions.items())
+    pool.starmap(move_files, extensions.items())
     pool.close()
     pool.join()
 
@@ -84,4 +82,3 @@ if __name__ == "__main__":
     assert d == [1, 2, 4, 5, 7, 10, 14, 20, 28, 35, 70, 140, 76079, 152158, 304316, 380395, 532553, 760790, 1065106, 1521580, 2130212, 2662765, 5325530, 10651060]
 
     print("Тест виконано успішно.")
-
